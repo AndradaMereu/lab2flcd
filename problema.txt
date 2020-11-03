@@ -1,0 +1,53 @@
+VAR 
+
+i:INT;
+
+k:INT; 
+
+d:INT; 
+
+j:INT; 
+
+isprime:BOOLEAN; 
+
+BEGIN 
+
+i:=2; 
+
+READ k; 
+
+WHILE  (i<k) DO 
+
+BEGIN 
+
+d:=2; 
+
+isprime:=TRUE; 
+
+WHILE(d<=(i/2))DO 
+
+BEGIN 
+
+IF(i%d=0)THEN 
+
+isprime:=FALSE; 
+
+d:=d+1; 
+
+END 
+
+IF(isprime=1) THEN  
+
+BEGIN  
+
+WRITE i; 
+
+END 
+
+i:=i+1; 
+
+ 
+
+END 
+
+       END. 

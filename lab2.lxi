@@ -1,0 +1,128 @@
+DIGIT    [0-9]
+
+%%
+
+BEGIN return 2;
+END return 3;
+VAR return 4;
+INT return 5;
+BOOLEAN return 6;
+READ return 7;
+WRITE return 8;
+IF return 9;
+WHILE return 10;
+TRUE return 11;
+FALSE return 12;
+THEN return 13;
+DO return 14;
+
+
+":" return 50;
+";" return 51;
+"(" return 52;
+")" return 53;
+":=" return 54;
+"=" return 55;
+"+" return 56;
+"-" return 57;
+"*" return 58;
+"/" return 59;
+"%" return 60;
+"." return 61;
+"<" return 62;
+"<=" return 63;
+">" return 64;
+">=" return 65;
+
+
+[a-zA-Z][_a-zA-Z0-9]* return 70;
+[1-9][0-9]* return 71;
+0 return 71;
+[ \t\n]      ;
+
+
+%%
+typedef struct{
+    int key;
+    int value;
+}pif; 
+
+typedef struct{
+    int key;
+    char value[30];
+}st;
+
+int pifLength=0;
+int stLength=0;
+
+pif PIF[100];
+st ST[100];
+
+void addToSt(char value[]){
+    if(findinST(value)==-1){
+    ST[stLength].key=stLength;
+    strcpy(ST[stLength].value,value);
+    stLength++;}
+}
+
+int findinST(char value[]){
+    for(int i=0;i<stLength;i++)
+        {if(strcmp(ST[i].value,value)==0) return ST[i].key;}
+    return -1;
+}
+
+void addIdentifierToPif(char value[])
+{
+    PIF[pifLength].key=70;
+    PIF[pifLength].value=findinST(value);
+    pifLength++;
+}
+
+void addConstantToPif(char value[])
+{
+    PIF[pifLength].key=71;
+    PIF[pifLength].value=findinST(value);
+    pifLength++;
+}
+
+void addElementToPif(int key)
+{
+    PIF[pifLength].key=key;
+    PIF[pifLength].value=-1;
+    pifLength++;
+}
+
+void printAll()
+{
+    
+    printf("PIF:\n");
+    for(int i=0;i<pifLength;i++)
+        printf("Element with code %d has value in St: %d \n " , PIF[i].key, PIF[i].value);
+    
+    printf("\nSymbol table:\n");
+    for(int i=0;i<stLength;i++)
+        printf("Element %s has position in St: %d \n " , ST[i].value, ST[i].key);
+}
+
+main( argc, argv )
+int argc;
+char **argv;
+    {
+         ++argv, --argc;	/* skip over program name */
+        if ( argc > 0 )
+            yyin = fopen( argv[0], "r" );
+        else
+            yyin = stdin;
+    int ntoken,vtoken;
+    ntoken=yylex();
+    while(ntoken){  if(ntoken==70) {addToSt(yytext); addIdentifierToPif(yytext);}
+                    else if(ntoken==71) {addToSt(yytext); addConstantToPif(yytext);}
+                    else addElementToPif(ntoken);
+    			    ntoken=yylex();}
+    printAll();
+    return 0;
+    }
+
+#ifndef yywrap
+   yywrap() { return 1; }
+   #endif
